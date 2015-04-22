@@ -61,14 +61,7 @@ class TwistedHTTPActions(Resource):
         action = reqData['action']
         del reqData['action']
         ##############THIS IS A HACK, TAKE IT THE FUCK OUT
-        print "Using superhack in HTTPActions"
-        try:
-            reqData["to"]=int(reqData["to"])
-            reqData["from"]=int(reqData["from"])
-            reqData["xmitRate"]=int(reqData["xmitRate"])
-            reqData["delay"]=int(reqData["delay"])
-        except KeyError:
-            print "hack failed to hack"
+
         ret = 200
         self.webActions._status = b"{\n\"\": \"\"\n}"
         ##This is a stub for an access control system...
