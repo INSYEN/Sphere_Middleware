@@ -34,7 +34,7 @@ class TwistedHTTPActions(Resource):
         Resource.__init__(self)
         self.webActions = webActions
         self.config = config
-        self.permittedActions = ['add','delete','update','status','addReportTemplate','removeReportTemplate','addNode','removeNode']
+        self.permittedActions = ['add','delete','update','status','addReportTemplate','removeReportTemplate','addNode','removeNode','updateNode']
 
     def getChild(self, name, request):
         if name == '':
@@ -52,15 +52,12 @@ class TwistedHTTPActions(Resource):
         request.responseHeaders.addRawHeader(b"Content-Type", b"application/json; charset=utf-8")
 
     def render_POST(self, request):
-        print 'post'
         self.sendHeaders(request)
         newData = request.content.getvalue()
         reqData = json.loads(newData)
-        print newData
         # Call DTNMP management function
         action = reqData['action']
         del reqData['action']
-        ##############THIS IS A HACK, TAKE IT THE FUCK OUT
 
         ret = 200
         self.webActions._status = b"{\n\"\": \"\"\n}"
@@ -82,7 +79,6 @@ class TwistedHTTPActions(Resource):
         return "test"
 
     def render_OPTIONS(self, request):
-        print 'opt'
         self.sendHeaders(request)
         # request.responseHeaders.addRawHeader('Content-type', 'application/json')
         request.setResponseCode(204)

@@ -34,7 +34,7 @@ class RoutingAlgorithmParent():
         self.db = db
 
     def CreateOperations(self, fromNode, toNode, protocol, startTime, endTime, xmitRate, delay):
-        print "NOTHING HAPPENS HERE"
+        return
 
 class EntireContactListRoutingAlgorithm(RoutingAlgorithmParent):
     def __init__(self, db):
@@ -50,9 +50,11 @@ class EntireContactListRoutingAlgorithm(RoutingAlgorithmParent):
 
 class NearestNeighborRoutingAlgorithm(RoutingAlgorithmParent):
     def __init__(self, db):
+        self.db=db
         return
 
     def CreateOperations(self, fromNode, toNode, protocol, startTime, endTime, xmitRate, delay):
+
         # Find plan data and add the plan
         retval = list()
         retval.append(('contact',
@@ -63,10 +65,7 @@ class NearestNeighborRoutingAlgorithm(RoutingAlgorithmParent):
         ##first, find nodes which are directly connected
         adjneighbors = self.db.contactCollection.find({'to': fromNode})
 
-        print '%d ' % (adjneighbors.count())
-
         for node in adjneighbors:
-            print node
             adjnodes = self.db.contactCollection.find({'from': node['from']})
             # create query
             notquery = list()
@@ -77,7 +76,6 @@ class NearestNeighborRoutingAlgorithm(RoutingAlgorithmParent):
 
             if len(notquery) != 0:
                 nquery = [{'from': node['to']}] + notquery
-                print nquery
                 neighbornodes = self.db.contactCollection.find({'$and': nquery})
                 #neighbornodes = self.db.contactCollection.find({'$and':[{'from':srcNode['nodeNum']},notquery]})
 
@@ -98,24 +96,38 @@ class WebActions():
         self.db = MongoManager()
         self.actions = NearestNeighborRoutingAlgorithm(self.db)
         self.dtnmpManager.SetVarCallback(self.varCallback)
+        self.dtnmpManager.SetContactCallback(self.contactCallback)
         self.curReportValue = 0
         self._status = b"{\n\"token\": \"xxx\"\n}"
         self.reportProductionFrequency = 10
+        self.contactReportingMIDS={'CGR_GET_ALL_CONTACTS','CGR_GET_ALL_RANGES'};
         # Start timer
         self.timerCallback()
 
     def varCallback(self, varData):
         self.db.db.ReportCollection.insert(varData)
 
+    def contactCallback(self,data,timestamp):
+        #Step 1: Search for contacts
+        availablecontacts = self.db.FindContacts(data)
+        if availablecontacts is not None:
+            #We have contacts, so step 1.2:  Update the contacts with a time
+            for contact in availablecontacts:
+                contact["reportedTime"]=timestamp
+                self.db.db.ContactCollection.save(contact)
+
     def timerCallback(self):
         allNodes = self.db.FindNodes()
         print "In timer callback"
         for node in allNodes:
+            #Add the special range and contact reports
+            self.dtnmpManager.CreateReport(node['dtnmpEid'],10,1,self.contactReportingMIDS)
             # Find all reports for this node
             reportsForNode = self.db.db.ConfigCollection.find({'nodeNum': node['nodeNum']})
             if reportsForNode is not None:
                 for report in reportsForNode:
                     self.dtnmpManager.CreateReport(node['dtnmpEid'], 10, 1, report['mids'])
+
 
         threading.Timer(self.reportProductionFrequency, self.timerCallback).start()
 
@@ -124,18 +136,38 @@ class WebActions():
             nodeName = self.db.FindNode({'nodeNum': reqData['node2monitor']})['dtnmpEid']
         except TypeError:
             return 200
-        print "nodeName: " + nodeName
         # newestReportSingle = self.db.db.ReportCollection.find_one({'node':nodeName}).sort("timestamp",-1).limit(1)
         newestReportSingle = self.db.db.ReportCollection.find_one({'node': nodeName}, sort=[("timestamp", -1)])
         if newestReportSingle is None:
             return 200
 
         allReports = self.db.db.ReportCollection.find({'timestamp': newestReportSingle['timestamp'], 'node': nodeName})
-        outputReports = OrderedDict()
+        outputReports = dict()
         for report in allReports:
             outputReports[report['name']] = str(report['value'])
         outputReports['timestamp'] = newestReportSingle['timestamp']
         self._status = json.dumps(outputReports)
+
+        return 200
+    def updateNode(self,reqData):
+        #Step 1: Check node status
+        nodeStatus=dict()
+        for nodeT in reqData['nodes']:
+            node=int(nodeT)
+            #Check if there are any items without a reported date
+
+           #The second find here can be removed, if you don't want orphaned nodes to "glow" red
+            if self.db.db.ContactCollection.find({'$and':[{'from':node},{'reportedTime':{'$exists':False}}]}).count() == 0 and \
+                            self.db.db.ContactCollection.find({'from':node}).count() > 0:
+                #Node is up-to-date
+                nodeStatus[node]="valid"
+            else:
+                nodeStatus[node]="invalid"
+
+        self._status=json.dumps({'nodeStatus':nodeStatus})
+
+        return 200
+
 
         return 200
 
@@ -155,13 +187,13 @@ class WebActions():
 
                 self.dtnmpManager.RemoveContact(curEid, curData['from'], curData['to'], curData['startTime'])
                 self.dtnmpManager.RemoveRange(curEid, curData['from'], curData['to'], curData['startTime'])
-                self.db.contactCollection.remove(
-                    {'from:': curData['from'], 'to:': curData['to'], 'startTime:': curData['startTime'] })
-                self.dtnmpManager.RemovePlan(srcNode['dtnmpEid'], destNode['nodeNum'])
+                self.dtnmpManager.RemovePlan(curEid, curData['to'])
 
             elif curOp == "group":
                 # srcNode = self.db.FindNode({'nodeNum': curData['via']})
                 self.dtnmpManager.RemoveGroup(curEid, curData['from'], curData['to'])
+
+        self.db.db.ContactCollection.remove(reqData)
 
         return 200
 
@@ -190,6 +222,8 @@ class WebActions():
                 #srcNode = self.db.FindNode({'nodeNum': curData['via']})
                 self.dtnmpManager.AddGroup(curEid, curData['from'], curData['to'], curData['via'])
 
+        #Fire off a report and add to database
+        self.dtnmpManager.CreateReport(curEid,1,1,self.contactReportingMIDS)
         self.db.AddContact(reqData)
         return 200
 

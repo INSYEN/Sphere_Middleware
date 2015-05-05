@@ -35,7 +35,7 @@ from WebActions import WebActions
 configOutline = """[mongodb]
 host=localhost
 port=12345
-bbName=dtnDB
+dbName=dtnDB
 
 [http]
 host=0.0.0.0

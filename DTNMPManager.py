@@ -27,9 +27,56 @@ import re
 
 class datalistParser():
     def __init__(self):
-        regex="\((\S+)\) (\S+)"
+        self.itemregex=re.compile("\((\S+)\) (\S+)")
+
     def parse(self,data):
-        datalist = list()
+        datalists = list()
+        charidx = 0
+        searchchar = b"["
+        startchar=0
+
+        #Note, this emulates the C behavior, and doesn't use recursive regex or outside dependencies
+        while charidx != -1:
+            charidx = data.find(searchchar,charidx)
+
+            if charidx > 0:
+                if searchchar == "[":
+                    startchar=charidx+1
+                    searchchar = b"]"
+
+                    continue
+                else:
+                    searchchar=b"["
+                    curdatalistText = data[startchar:charidx]
+
+                    curdatalist=list()
+                    #Now, break
+                    for curitem in curdatalistText.split(","):
+
+                        output=self.itemregex.match(curitem)
+                        if output is None:
+                            continue
+
+                        type=output.group(1)
+                        valueText= output.group(2)
+
+                        if type=="string":
+                            value=valueText
+                        elif type=="real32" or type=="real64":
+                            value = float(valueText)
+                        else:
+                            value=int(valueText)
+
+                        curdatalist.append((type,value))
+                        datalists.append(curdatalist)
+            else:
+                break
+
+        return datalists
+
+
+
+
 
 
 
@@ -38,25 +85,53 @@ class DTNMPManager():
         self.host = host
         self.port = port
         self._extNewVarCallback = None
+        self._extNewContactCallback = None
         self.varCallList = dict()
         self.curReportValue = 0
 
         # Add default variable callbacks
         self.varCallList["total_reports"] = self.intUpdateReportCount
         self.varCallList["num_reports"] = self.intRequestReportPrint
-        #self.varCalllist["CGR_GET_ALL_CONTACTS"] = self.intGenerateContactList;
-        #self.varCalllist["CGR_GET_ALL_RANGES"] = self.intGenerateRangeList;
+        self.varCallList["CGR_GET_ALL_CONTACTS"] = self.intGenerateContactList;
+        self.varCallList["CGR_GET_ALL_RANGES"] = self.intGenerateRangeList;
 
         self.factory = DTNMPManagerClientFactory()
         self.factory.parent = self
+        self._extContactCallback= None
+        self._extRangeCallback = None
+
         reactor.connectTCP(self.host, self.port, self.factory)
 
-    # def intGenerateContactList(self,varData):
-    #     dlParser = datalistParser(varData)
-    #
-    #     for contact in dlParser:
-    #         #Step 1.1: put object into dict
+    def intGenerateContactList(self,varData):
+        dlParser = datalistParser()
 
+        for item in dlParser.parse(varData['value']):
+             #Step 1.1: put object into dict
+            output = dict();
+            output['from']=item[0][1]
+            output['to']=item[1][1]
+            output['startTime']=item[2][1]
+            output['stopTime']=item[3][1]
+            output['bitRate']=item[5][1]
+
+            #Step 1.2: Call parent callback
+            if self._extNewContactCallback is not None:
+                self._extNewContactCallback(output,varData['timestamp'])
+
+    def intGenerateRangeList(self,varData):
+        dlParser = datalistParser()
+
+        for item in dlParser.parse(varData['value']):
+             #Step 1.1: put object into dict
+            output = dict();
+            output['from']=item[0][1]
+            output['to']=item[1][1]
+            output['startTime']=item[2][1]
+            output['stopTime']=item[3][1]
+            output['delay']=item[4][1]
+            #Step 1.2: Call parent callback
+            if self._extRangeCallback is not None:
+                self._extRangeCallback(output,varData['timestamp'])
 
     def intUpdateReportCount(self, varData):
         if varData['value'] > self.curReportValue:
@@ -68,7 +143,7 @@ class DTNMPManager():
     def intRequestReportPrint(self, varData):
         if varData['value'] != 0:
             self.ShowReports(varData['node'])
-            # self.SendCommand(varData['node'],"reports.delete")
+            self.SendCommand(varData['node'],"reports.delete")
 
     def varCallbackProcessor(self, varData):
         self.varCallList.get(varData["name"], self.defaultNewVarCallback)(varData)
@@ -79,9 +154,14 @@ class DTNMPManager():
     def SetVarCallback(self, callback):
         self._extNewVarCallback = callback
 
+    def SetContactCallback(self,callback):
+        self._extNewContactCallback=callback
+
+    def SetRangeCallback(self,callback):
+        self._extNewRangeCallback=callback
+
     def intVarDetok(self, data):
-        print "In var detok"
-        regex = "v:(\S+)@(\d+)\\\\(\S+)\((\S+)\)=(\S+)"
+        regex = "v:(\S+)@(\d+)\\\\(\S+)\((\S+)\)=(.*)"
         for dataChunk in data.split(';'):
             dataChunk = dataChunk.lstrip('\r\n')
             reout = re.match(regex, dataChunk)
@@ -99,7 +179,7 @@ class DTNMPManager():
             if output['type'] == 'uint32' or output['type'] == 'int32' or output['type'] == 'vast' or output[
                 'type'] == 'uvast' or output['type'] == 'real32':
                 output['value'] = int(output['valuestr'])
-            elif output['type'] == 'string':
+            else:
                 output['value'] = str(output['valuestr'])
 
             self.varCallbackProcessor(output)
@@ -113,9 +193,7 @@ class DTNMPManager():
         print data
 
     def intReceive(self, data):
-        print 'in intreceive ' + data[0:2]
         if data[:2] == 'v:':  # Variable!
-            print 'Found variable'
             # Call internal detokenizer
             self.intVarDetok(data)
 
