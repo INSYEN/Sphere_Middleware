@@ -152,11 +152,10 @@ class WebActions():
     def updateNode(self,reqData):
         #Step 1: Check node status
         nodeStatus=dict()
-        for nodeT in reqData['nodes']:
-            node=int(nodeT)
-            #Check if there are any items without a reported date
+        for node in reqData['nodes']:
 
-           #The second find here can be removed, if you don't want orphaned nodes to "glow" red
+            #Check if there are any items without a reported date
+            #The second find here can be removed, if you don't want orphaned nodes to "glow" red
             if self.db.db.ContactCollection.find({'$and':[{'from':node},{'reportedTime':{'$exists':False}}]}).count() == 0 and \
                             self.db.db.ContactCollection.find({'from':node}).count() > 0:
                 #Node is up-to-date
@@ -165,9 +164,6 @@ class WebActions():
                 nodeStatus[node]="invalid"
 
         self._status=json.dumps({'nodeStatus':nodeStatus})
-
-        return 200
-
 
         return 200
 

@@ -63,5 +63,5 @@ if __name__ == '__main__':
 
     webActions = WebActions(config)
     site = server.Site(TwistedHTTPActions.TwistedHTTPActions(webActions, config))
-    reactor.listenTCP(8090, site)
+    reactor.listenTCP(config.getint('http','port'), site)
     reactor.run()
