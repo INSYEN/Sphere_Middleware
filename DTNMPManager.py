@@ -203,6 +203,10 @@ class DTNMPManager():
         # print output
         self.intSend(output)
 
+    def AddPlan(self,destAddr,toNode,protocol,host):
+        output = "%s\controls.create.ion_plan_add={[(uvast) %d,(string) %s,(string) %s]};" % (
+            destAddr, toNode, protocol, host)
+        self.intSend(output)
 
     def AddContact(self, destAddr, fromNode, toNode, startTime, endTime, xmitRate):
         output = "%s\controls.create.cgr_contact_add={[(uvast) %d,(uvast) %d,(uint64) %d,(uint64) %d,(real32) 1.00,(uint32) %d]};" % (
@@ -222,26 +226,46 @@ class DTNMPManager():
         # print output
         self.intSend(output)
 
+    def AddSpan(self,destAddr,destEngine,maxImportSess,maxExportSess,segSize,sizeLimit,timeLimit,queueTime,purgeVal,lsoString):
+        output = "%s\controls.create.ltp_span_add={[(uvast)%d,(uint32)%d,(uint32)%d,(uint32)%d,(uint32)%d,(uint32)%d," \
+                 "(uint32)%d,(int32)%d,(string) %s]};" % (destAddr,destEngine,maxImportSess,maxExportSess,segSize,
+                                                              sizeLimit,timeLimit,queueTime,purgeVal,lsoString)
+        self.intSend(output)
+
+    def AddOutduct(self,destAddr,proto,outductName,cloName):
+        output = "%s\controls.create.ion_outduct_add={[(string)%s,(string)%s,(string)%s]};" % (destAddr,proto,outductName,cloName)
+        self.intSend(output)
+
     def RemovePlan(self, destAddr, toNode):
         output = "%s\controls.create.ion_plan_remove={[(uvast) %d]};" % (destAddr, toNode)
+        self.intSend(output)
+
+    def RemoveSpan(self, destAddr, toNode):
+        output = "%s\controls.create.ltp_span_remove={[(uvast) %d]};" % (destAddr, toNode)
         # print output
         self.intSend(output)
 
     def RemoveContact(self, destAddr, fromNode, toNode, startTime):
-        output = "%s\controls.create.cgr_contact_remove={[(uvast) %d,(uvast) %d,(uint64) %d]};" % (
-            destAddr, fromNode, toNode, startTime)
+        output = "%s\controls.create.cgr_contact_remove={[(uvast) %d,(uvast) %d,(uint64) %d]};" % (destAddr, fromNode, toNode, startTime)
         # print output
         self.intSend(output)
 
     def RemoveRange(self, destAddr, fromNode, toNode, startTime):
-        output = "%s\controls.create.cgr_range_remove={[(uvast) %d,(uvast) %d,(uint64) %d]};" % (
-            destAddr, fromNode, toNode, startTime)
-        # print output
+        output = "%s\controls.create.cgr_range_remove={[(uvast) %d,(uvast) %d,(uint64) %d]};" % (destAddr, fromNode, toNode, startTime)
+        # print  output
         self.intSend(output)
 
     def RemoveGroup(self, destAddr, fromNode, toNode):
         output = "%s\controls.create.ion_group_remove={[(uvast) %d,(uvast) %d}];" % (destAddr, fromNode, toNode)
         # print output
+        self.intSend(output)
+
+    def RemoveOutduct(self,destAddr,proto,outductName):
+        output = "%s\controls.create.ion_outduct_remove={[(string)%s,(string)%s]};" % (destAddr,proto,outductName)
+        self.intSend(output)
+
+    def RemoveSpan(self,destAddr, engineID):
+        output="%s\controls.create.ltp_span_remove={[(uvast) %d]};" % (destAddr,engineID)
         self.intSend(output)
 
     def RegisterNode(self, destAddr):

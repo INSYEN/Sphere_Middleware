@@ -39,6 +39,12 @@ class Actions():
         print reportData
         self.send(reportData)
 
+    def confSpan(self,args):
+        if len(args)<10:
+            print "Not enough args"
+            sys.exit(0)
+        spanData  = {'nodeNum':int(args[0]),'maxImportSessions':int(args[1]),'maxExportSessions':int(args[2]),'segSize':int(args[3]),'sizeLimit':int(args[4]),'timeLimit':int(args[5]),'queueTime':int(args[6]),'purgeVal':int(args[7]),'cla':args[8],'hostName':args[9],'port': int(args[10]),'dtnmpEid':'ipn:%s.1'%args[0],'protocol': "ltp",'action':'addNode'}
+        self.send(spanData)
     def send(self,data):
         self.http.request('POST','/',json.dumps(data))
         res = self.http.getresponse()
@@ -55,6 +61,7 @@ def PrintUsage():
     print "commands/options:"
     print "addNode - nodeNumber,host,port,proto"
     print "addReportTemplate - nodeNumber [mids]"
+    print "confSpan - nodeNum,maxImportSess,maxExportSess,segSize,sizeLimit,timeLimit,queueTime,purgeVal,cla,hostname,port"
 if len(sys.argv)<2:
     PrintUsage()
     sys.exit(0)

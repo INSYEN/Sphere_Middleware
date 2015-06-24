@@ -175,8 +175,12 @@ class WebActions():
         for operation in contactandgroup:
             curOp = operation[0]
             curData = operation[1]
-            curEid = self.db.FindNode({'nodeNum': curData['node']})['dtnmpEid']
-
+            print curData
+            try:
+                curEid = self.db.FindNode({'nodeNum': curData['node']})['dtnmpEid']
+            except KeyError:
+                print "Couldn't create operations"
+                return 200
             if curOp == "contact":
                 srcNode = self.db.FindNode({'nodeNum': curData['from'], 'protocol': curData['protocol']})
                 destNode = self.db.FindNode({'nodeNum': curData['to'], 'protocol': curData['protocol']})
@@ -185,6 +189,10 @@ class WebActions():
                 self.dtnmpManager.RemoveRange(curEid, curData['from'], curData['to'], curData['startTime'])
                 self.dtnmpManager.RemovePlan(curEid, curData['to'])
 
+                if curData['protocol'] == 'ltp':
+                    self.dtnmpManager.RemoveSpan(curEid,curData['to'])
+                    self.dtnmpManager.RemoveOutduct(curEid,str(curData['to']),"ltp"
+                                                    )
             elif curOp == "group":
                 # srcNode = self.db.FindNode({'nodeNum': curData['via']})
                 self.dtnmpManager.RemoveGroup(curEid, curData['from'], curData['to'])
@@ -211,8 +219,23 @@ class WebActions():
                                              curData['endTime'], curData['xmitrate'])
                 self.dtnmpManager.AddRange(curEid, curData['from'], curData['to'], curData['startTime'],
                                              curData['endTime'], curData['delay'])
-                self.dtnmpManager.AddPlan(srcNode['dtnmpEid'], destNode['nodeNum'], destNode['protocol'],
-                                          destNode['hostName'], destNode['port'])
+                ##For LTP contacts
+                if srcNode['protocol']=='ltp':
+                    try:
+                        if srcNode['cla']=="udp":
+                            lsoString = "udplso %s:%d" % (srcNode['hostName'],srcNode['port'])
+                            print lsoString
+                        self.dtnmpManager.AddOutduct(curEid,"ltp", str(curData['to']),"ltpclo")
+                        self.dtnmpManager.AddSpan(curEid,curData['to'], srcNode['maxImportSessions'],srcNode['maxExportSessions'],srcNode['segSize'],srcNode['sizeLimit'],srcNode['timeLimit'],srcNode['queueTime'],srcNode['purgeVal'],lsoString)
+                        self.dtnmpManager.AddPlan(srcNode['dtnmpEid'], destNode['nodeNum'], srcNode['protocol'],
+                                                destNode['nodeNum'])
+                    except KeyError:
+                        print "Not all required LTP-related values are present"
+                        return 500;
+                else:
+                    self.dtnmpManager.AddPlan(srcNode['dtnmpEid'], destNode['nodeNum'], destNode['protocol'],
+                                                destNode['hostName'], destNode['port'])
+
 
             elif curOp == "group":
                 #srcNode = self.db.FindNode({'nodeNum': curData['via']})
