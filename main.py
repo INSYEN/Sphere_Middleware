@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# Copyright 2015 INSYEN, AG
+# Copyright 2016 INSYEN, AG
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the
@@ -24,33 +24,40 @@ __author__ = 'Jeremy'
 import ConfigParser
 import argparse
 import io
-from twisted.web import server
-from twisted.internet import reactor
+import importlib
 
-import TwistedHTTPActions
-from WebActions import WebActions
-
+import CommandProcessor
 
 # from twisted.internet import protocol, reactor, endpoints
-configOutline = """[mongodb]
-host=localhost
-port=12345
-dbName=dtnDB
-
-[http]
+configOutline = """[DTNOTronHTTP]
 host=0.0.0.0
 port=8090
 
-[dtnmp]
+[TCPRPCComms]
 host=localhost
 port=12345
 
+[ADM]
+LoadADMS=ADM/IONADM.json
+         ADM/CGRADM.json
+         ADM/LTPADM.json
+         ADM/BPADM.json
+
+[database]
+url=postgres://dtnotron:dtnotron@localhost/dtnotron
+
 [system]
-frontendAgent=TwistedHTTPActions;"""
+frontendAgent=DTNOTronHTTP
+DefaultContactListCreator=EntireContactList
+DefaultCommandGenerator=IONCommandProducer
+ampManager=TCPRPCComms
+reportDefaultsFile=reportDefaults.json
+protocolDefaultsFile=protocolDefaults.json
+"""
+
 if __name__ == '__main__':
     # Parse the arguments
-    print configOutline
-    argParser = argparse.ArgumentParser(description='The Alpha backend for Sphere/DTNoTron')
+    argParser = argparse.ArgumentParser(description='The Beta backend for DTN-O-Tron')
     argParser.add_argument('--configFile', nargs='+', default='middleware.conf', help='Change config file')
     # argParser.add_argument('port',nargs='+',type=int,help='Change listening port')
     args = argParser.parse_args()
@@ -61,7 +68,11 @@ if __name__ == '__main__':
     # invalid file entires, because python gives you just enough rope to hang yourself
     config.read(args.configFile)
 
-    webActions = WebActions(config)
-    site = server.Site(TwistedHTTPActions.TwistedHTTPActions(webActions, config))
-    reactor.listenTCP(config.getint('http','port'), site)
-    reactor.run()
+    # Init various components...
+    commandProcessor = CommandProcessor.CommandProcessor(config)
+    # Start frontend
+    frontendStr = config.get('system', 'frontendAgent')
+    frontend = getattr(importlib.import_module(frontendStr), frontendStr)(commandProcessor)
+    print 'Starting ' + frontendStr
+    frontend.SetConfig(dict(config.items(frontendStr)))
+    frontend.start()

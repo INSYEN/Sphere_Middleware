@@ -1,0 +1,157 @@
+{
+  "name": "CGR ADM",
+  "controls": {
+    "cgr_contact_add": {
+      "mid": 1,
+      "parameters": [
+        {
+          "type": "dc",
+          "description": "A DC containing the contact(s)",
+          "validator": {
+            "type": "tdc",
+            "description": "A TDC containing the contact to be added",
+            "validator": [
+              "uvast",
+              "uvast",
+              "uint64",
+              "uint64",
+              "uint32"
+            ],
+            "names": [
+              "fromNode",
+              "toNode",
+              "startTime",
+              "endTime",
+              "bitRate"
+            ]
+          }
+        }
+      ]
+    },
+    "cgr_contact_remove": {
+      "mid": 1,
+      "parameters": [
+        {
+          "type": "dc",
+          "description": "A DC containing the contact(s)",
+          "validator": {
+            "type": "tdc",
+            "description": "A TDC containing the contact to be deleted",
+            "validator": [
+              "uvast",
+              "uvast",
+              "uint64"
+            ],
+            "names": [
+              "fromNode",
+              "toNode",
+              "startTime"
+            ]
+          }
+        }
+      ]
+    },
+    "cgr_range_add": {
+      "mid": 1,
+      "parameters": [
+        {
+          "type": "dc",
+          "description": "A DC containing the range(s)",
+          "validator": {
+            "type": "tdc",
+            "description": "A TDC containing the range to be added",
+            "validator": [
+              "uvast",
+              "uvast",
+              "uint64",
+              "uint64",
+              "uint32"
+            ],
+            "names": [
+              "fromNode",
+              "toNode",
+              "startTime",
+              "endTime",
+              "owltDelay"
+            ]
+          }
+        }
+      ]
+    },
+    "cgr_range_remove": {
+      "mid": 1,
+      "parameters": [
+        {
+          "type": "dc",
+          "description": "A DC containing the range(s)",
+          "validator": {
+            "type": "tdc",
+            "description": "A TDC containing the range to be deleted",
+            "validator": [
+              "uvast",
+              "uvast",
+              "uint64"
+            ],
+            "names": [
+              "fromNode",
+              "toNode",
+              "startTime"
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "atomic":{
+    "CGR_GET_ALL_RANGES": {
+      "mid": "DEADBEEF",
+      "format": {
+        "type": "dc",
+        "description": "A DC containing the range(s)",
+        "validator": {
+          "type": "tdc",
+          "description": "A TDC containing the range",
+          "validator": [
+            "uvast",
+            "uvast",
+            "uint64",
+            "uint64",
+            "uint32"
+          ],
+          "names": [
+            "fromNode",
+            "toNode",
+            "startTime",
+            "endTime",
+            "owltDelay"
+          ]
+        }
+      }
+    },
+    "CGR_GET_ALL_CONTACTS": {
+      "mid": "DEADBEEF",
+      "format": {
+        "type": "dc",
+        "description": "A DC containing the contact(s)",
+        "validator": {
+          "type": "tdc",
+          "description": "A TDC containing the contact",
+          "validator": [
+            "uvast",
+            "uvast",
+            "uint64",
+            "uint64",
+            "uint32"
+          ],
+          "names": [
+            "fromNode",
+            "toNode",
+            "startTime",
+            "endTime",
+            "bitRate"
+          ]
+        }
+      }
+    }
+  }
+}

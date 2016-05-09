@@ -1,0 +1,322 @@
+{
+  "name": "BP ADM",
+  "controls": {
+    },
+  "atomic":{
+"BP NODE ID": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203010101"
+        },
+        "BP_BNDL_BULK_SRC_BYTES": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203010119"
+        },
+        "BP_BNDL_BULK_SRC_CNT": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203010116"
+        },
+        "BP_BNDL_CUR_BULK_RES_BYTES": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203010113"
+        },
+        "BP_BNDL_CUR_BULK_RES_CNT": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203010110"
+        },
+        "BP_BNDL_CUR_DISPATCH_PEND_CNT": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203010107"
+        },
+        "BP_BNDL_CUR_EXP_BYTES": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203010115"
+        },
+        "BP_BNDL_CUR_EXP_RES_CNT": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203010112"
+        },
+        "BP_BNDL_CUR_FWD_PEND_CNT": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203010106"
+        },
+        "BP_BNDL_CUR_IN_CUSTODY_CNT": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203010108"
+        },
+        "BP_BNDL_CUR_NORM_BYTES": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203010114"
+        },
+        "BP_BNDL_CUR_NORM_RES_CNT": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203010111"
+        },
+        "BP_BNDL_CUR_REASSMBL_PEND_CNT": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203010109"
+        },
+        "BP_BNDL_EXP_SRC_BYTES": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203010121"
+        },
+        "BP_BNDL_EXP_SRC_CNT": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203010118"
+        },
+        "BP_BNDL_FRAGMENTED_CNT": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203010122"
+        },
+        "BP_BNDL_FRAG_PRODUCED": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203010123"
+        },
+        "BP_BNDL_NORM_SRC_BYTES": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203010120"
+        },
+        "BP_BNDL_NORM_SRC_CNT": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203010117"
+        },
+        "BP_NODE_AVAIL_STOR": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203010103"
+        },
+        "BP_NODE_LAST_RESET_TIME": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203010104"
+        },
+        "BP_NODE_NUM_REG": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203010105"
+        },
+        "BP_NODE_VER": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203010102"
+        },
+        "BP_RPT_ABANDONED_BYTES": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203010139"
+        },
+        "BP_RPT_ABANDONED_CNT": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203010138"
+        },
+        "BP_RPT_BAD_BLOCK_DEL_CNT": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203010132"
+        },
+        "BP_RPT_BAD_EID_DEL_CNT": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203010129"
+        },
+        "BP_RPT_BUNDLES_DEL_CNT": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203010133"
+        },
+        "BP_RPT_CANCEL_DEL_CNT": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203010127"
+        },
+        "BP_RPT_DISCARD_BYTES": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203010141"
+        },
+        "BP_RPT_DISCARD_CNT": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203010140"
+        },
+        "BP_RPT_EXPIRED_DEL_CNT": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203010125"
+        },
+        "BP_RPT_FAIL_CUST_XFER_BYTES": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203010135"
+        },
+        "BP_RPT_FAIL_CUST_XFER_CNT": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203010134"
+        },
+        "BP_RPT_FAIL_FWD_BYTES": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203010137"
+        },
+        "BP_RPT_FAIL_FWD_CNT": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203010136"
+        },
+        "BP_RPT_NOINFO_DEL_CNT": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203010124"
+        },
+        "BP_RPT_NO_CONTACT_DEL_CNT": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203010131"
+        },
+        "BP_RPT_NO_ROUTE_DEL_CNT": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203010130"
+        },
+        "BP_RPT_NO_STRG_DEL_CNT": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203010128"
+        },
+        "BP_RPT_UNI_FWD_DEL_CNT": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203010126"
+        },
+    "BP_ENDPT_ABANDON_ON_DEL_FAIL": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203010204"
+        },
+        "BP_ENDPT_ACTIVE": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203010202"
+        },
+        "BP_ENDPT_NAME": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203010201"
+        },
+        "BP_ENDPT_SINGLETON": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203010203"
+        }
+    }
+}

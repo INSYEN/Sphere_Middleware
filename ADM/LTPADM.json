@@ -1,0 +1,352 @@
+{
+  "name": "LTP ADM",
+  "controls": {
+    "ltp_span_add": {
+      "mid": 1,
+      "parameters": [
+        {
+          "type": "dc",
+          "description": "A DC containing the spans",
+          "validator": {
+            "type": "tdc",
+            "description": "A TDC containing the span to be added",
+            "validator": [
+              "uvast",
+              "uint32",
+              "uint32",
+              "uint32",
+              "uint32",
+              "uint32",
+              "uint32",
+              "uint32",
+              "string"
+            ]
+          }
+        }
+      ]
+    },
+    "ltp_span_remove": {
+      "mid": 1,
+      "parameters": [
+        {
+          "type": "dc",
+          "description": "A DC containing the span(s)",
+          "validator": {
+            "type": "tdc",
+            "description": "A TDC containing the span to be deleted",
+            "validator": [
+              "uvast"
+            ],
+            "names": [
+              "toNode"
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "atomic":
+  {
+    "LTP_GET_ALL_SPANS": {
+      "mid": "2B06010203020104",
+      "format": {
+        "type": "uint32",
+        "validator": "uint32"
+      }
+    },
+    "LTP_ENG_CUR_IMP_SESS": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203020204"
+        },
+        "LTP_ENG_CUR_IN_SEG": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203020205"
+        },
+        "LTP_ENG_CUR_OUT_SEG": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203020203"
+        },
+        "LTP_ENG_EXP_SESS": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203020202"
+        },
+        "LTP_ENG_IN_ACK_REXMT_CNT": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203020240"
+        },
+        "LTP_ENG_IN_CANC_RCV_CNT": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203020241"
+        },
+        "LTP_ENG_IN_CANC_XMIT_CNT": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203020239"
+        },
+        "LTP_ENG_IN_CKP_RCV_CNT": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203020236"
+        },
+        "LTP_ENG_IN_COMPL_CNT": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203020242"
+        },
+        "LTP_ENG_IN_NEG_ACK_XMIT_CNT": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203020238"
+        },
+        "LTP_ENG_IN_POS_ACK_XMIT_CNT": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203020237"
+        },
+        "LTP_ENG_IN_SEG_CLSD_BYTE": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203020235"
+        },
+        "LTP_ENG_IN_SEG_CLSD_CNT": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203020234"
+        },
+        "LTP_ENG_IN_SEG_MAL_BYTE": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203020225"
+        },
+        "LTP_ENG_IN_SEG_MAL_CNT": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203020224"
+        },
+        "LTP_ENG_IN_SEG_MISCOL_BYTE": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203020233"
+        },
+        "LTP_ENG_IN_SEG_MISCOL_CNT": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203020232"
+        },
+        "LTP_ENG_IN_SEG_RCV_GRN_BYTE": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203020221"
+        },
+        "LTP_ENG_IN_SEG_RCV_GRN_CNT": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203020220"
+        },
+        "LTP_ENG_IN_SEG_RCV_RED_BYTE": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203020219"
+        },
+        "LTP_ENG_IN_SEG_RCV_RED_CNT": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203020218"
+        },
+        "LTP_ENG_IN_SEG_RDNDT_BYTE": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203020223"
+        },
+        "LTP_ENG_IN_SEG_RDNDT_CNT": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203020222"
+        },
+        "LTP_ENG_IN_SEG_STRAY_BYTE": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203020231"
+        },
+        "LTP_ENG_IN_SEG_STRAY_CNT": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203020230"
+        },
+        "LTP_ENG_IN_SEG_UNK_CLI_BYTE": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203020229"
+        },
+        "LTP_ENG_IN_SEG_UNK_CLI_CNT": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203020228"
+        },
+        "LTP_ENG_IN_SEG_UNK_SND_BYTE": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203020227"
+        },
+        "LTP_ENG_IN_SEG_UNK_SND_CNT": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203020226"
+        },
+        "LTP_ENG_LAST_RESET_TIME": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203020206"
+        },
+        "LTP_ENG_NUM": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203020201"
+        },
+        "LTP_ENG_OUT_CANC_RCV_CNT": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203020214"
+        },
+        "LTP_ENG_OUT_CANC_XMIT_CNT": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203020216"
+        },
+        "LTP_ENG_OUT_CKP_REXMT_CNT": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203020215"
+        },
+        "LTP_ENG_OUT_CKP_XMIT_CNT": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203020211"
+        },
+        "LTP_ENG_OUT_COMPL_CNT": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203020217"
+        },
+        "LTP_ENG_OUT_NEG_ACK_RCV_CNT": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203020213"
+        },
+        "LTP_ENG_OUT_POS_ACK_RCV_CNT": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203020212"
+        },
+        "LTP_ENG_OUT_SEG_POP_BYTE": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203020210"
+        },
+        "LTP_ENG_OUT_SEG_POP_CNT": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203020209"
+        },
+        "LTP_ENG_OUT_SEG_Q_BYTE": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203020208"
+        },
+        "LTP_ENG_OUT_SEG_Q_CNT": {
+            "format": {
+                "type": "uint32",
+                "validator": "uint32"
+            },
+            "mid": "2B06010203020207"
+        }
+  }
+}

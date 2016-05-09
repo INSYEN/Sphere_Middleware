@@ -1,0 +1,278 @@
+{
+  "name": "ION ADM",
+  "controls": {
+    "ion_group_add": {
+      "mid": 1,
+      "parameters": [
+        {
+          "type": "dc",
+          "description": "A DC containing the groups",
+          "validator": {
+            "type": "tdc",
+            "description": "A TDC containing the group to be added",
+            "validator": [
+              "uvast",
+              "uvast",
+              "string"
+            ],
+            "names": [
+              "startNode",
+              "endNode",
+              "viaEid"
+            ]
+          }
+        }
+      ]
+    },
+    "ion_group_remove": {
+      "mid": 5,
+      "parameters": [
+        {
+          "type": "dc",
+          "description": "A DC containing embedded TDCs",
+          "validator": {
+            "type": "tdc",
+            "description": "A TDC containing the group to be removed",
+            "validator": [
+              "uvast",
+              "uvast"
+            ],
+            "names": [
+              "startNode",
+              "endNode"
+            ]
+          }
+        }
+      ]
+    },
+    "ion_induct_reset": {
+      "mid": 0
+    },
+    "ion_outduct_add": {
+      "mid": 6,
+      "parameters": [
+        {
+          "type": "dc",
+          "description": "A DC containing embedded TDCs",
+          "validator": {
+            "type": "tdc",
+            "description": "A TDC containing the outduct to be added",
+            "validator": [
+              "string",
+              "string",
+              "string"
+            ],
+            "names": [
+              "protocolName",
+              "outductName",
+              "cloCmd"
+            ]
+          }
+        }
+      ]
+    },
+    "ion_outduct_remove": {
+      "mid": 7,
+      "parameters": [
+        {
+          "type": "dc",
+          "description": "A DC containing the outduct",
+          "validator": {
+            "type": "tdc",
+            "description": "A TDC containing the outduct to be removed",
+            "validator": [
+              "string",
+              "string"
+            ],
+            "names": [
+              "protocolName",
+              "outductName"
+            ]
+          }
+        }
+      ]
+    },
+    "ion_outduct_reset": {
+      "mid": 1
+    },
+    "ion_plan_add": {
+      "mid": 2,
+      "parameters": [
+        {
+          "type": "dc",
+          "description": "A DC containing the plan",
+          "validator": {
+            "type": "tdc",
+            "description": "A TDC containing the plan to be added with port number",
+            "validator": [
+              [
+                "uvast",
+                "string",
+                "string",
+                "uint16"
+              ],
+              [
+                "uvast",
+                "string",
+                "string"
+              ]
+            ],
+            "names": [
+              "nodeNum",
+              "protocol",
+              "hostName",
+              "port"
+            ]
+          }
+        }
+      ]
+    },
+    "ion_plan_remove": {
+      "mid": 3,
+      "parameters": [
+        {
+          "type": "dc",
+          "description": "A DC containing the plans",
+          "validator": {
+            "type": "tdc",
+            "description": "A TDC containing the plan to be removed",
+            "validator": [
+              "uvast"
+            ],
+            "names": [
+              "nodeNum"
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "atomic": {
+    "ICI_SMALL_POOL_SIZE": {
+      "mid": "2B0601020304011",
+      "format": {
+        "type": "uint32",
+        "validator": "uint32"
+      }
+    },
+    "ICI_SMALL_POOL_FREE": {
+      "mid": "2B0601020304012",
+      "format": {
+        "type": "uint32",
+        "validator": "uint32"
+      }
+    },
+    "ICI_SMALL_POOL_ALLOC": {
+      "mid": "2B0601020304013",
+      "format": {
+        "type": "uint32",
+        "validator": "uint32"
+      }
+    },
+    "ICI_LARGE_POOL_SIZE": {
+      "mid": "2B0601020304014",
+      "format": {
+        "type": "uint32",
+        "validator": "uint32"
+      }
+    },
+    "ICI_LARGE_POOL_FREE": {
+      "mid": "2B0601020304015",
+      "format": {
+        "type": "uint32",
+        "validator": "uint32"
+      }
+    },
+    "ICI_LARGE_POOL_ALLOC": {
+      "mid": "2B0601020304016",
+      "format": {
+        "type": "uint32",
+        "validator": "uint32"
+      }
+    },
+    "ICI_UNUSED_SIZE": {
+      "mid": "2B0601020304017",
+      "format": {
+        "type": "uint32",
+        "validator": "uint32"
+      }
+    },
+    "ION_NODE_GET_PLANS": {
+      "mid": "2B0601020304043",
+      "format": {
+        "type": "tdc",
+        "validator": {
+          "type": "tdc",
+          "description": "A TDC containing the plan to be added with port number",
+          "validator": [
+            [
+              "uvast",
+              "string",
+              "string",
+              "uint16"
+            ],
+            [
+              "uvast",
+              "string",
+              "string"
+            ]
+          ],
+          "names": [
+            "nodeNum",
+            "protocol",
+            "hostName",
+            "port"
+          ]
+        }
+      }
+    },
+    "ION_NODE_GET_GROUPS": {
+      "mid": "2B0601020304044",
+      "format": {
+        "type": "tdc",
+        "validator": {
+          "type": "dc",
+          "description": "A DC containing the groups",
+          "validator": {
+            "type": "tdc",
+            "description": "A TDC containing the group to be added",
+            "validator": [
+              "uvast",
+              "uvast",
+              "string"
+            ],
+            "names": [
+              "startNode",
+              "endNode",
+              "viaEid"
+            ]
+          }
+        }
+      }
+    },
+      "ION_NODE_GET_OUTDUCTS": {
+        "mid": "2B0601020304045",
+        "format": {
+          "type": "uint32",
+          "validator":{
+          "type": "dc",
+          "description": "A DC containing embedded TDCs",
+          "validator": {
+            "type": "tdc",
+            "description": "A TDC containing the outduct to be added",
+            "validator": [
+              "string",
+              "string",
+              "string"
+            ],
+            "names": [
+              "protocolName",
+              "outductName",
+              "cloCmd"
+            ]
+          }
+         }
+        }
+      }
+  }
+}

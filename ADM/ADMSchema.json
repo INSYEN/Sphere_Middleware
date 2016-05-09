@@ -1,0 +1,50 @@
+{
+  "$schema": "http://json-schema.org/schema#",
+  "title": "adm",
+  "required": [
+  "name"
+  ],
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "The name of the ADM"
+    },
+    "controls": {
+      "type": "object",
+      "description": "An array of all controls present in this ADM",
+      "items":
+      {
+         "$ref": "#/definitions/controlItem"
+      }
+    },
+    "atomic": {
+      "type": "object",
+      "description": "An array of all atomic data items present in this ADM"
+    }
+  },
+  "definitions": {
+        "controlItem": {
+          "type":"object",
+          "properties": {
+            "mid":{"type":"string"}
+          },
+          "required":["mid"]
+        },
+    "atomicItem": {
+          "type":"object",
+          "properties": {
+            "mid":{"type":"string"},
+            "format":{"type":"#/definitions/atomicFormat"}
+          },
+          "required":["mid","format"]
+        }
+    ,
+    "atomicItem": {
+          "type":"object",
+          "properties": {
+            "mid":{"type":"string"}
+          },
+          "required":["type","validator"]
+        }
+  }
+}

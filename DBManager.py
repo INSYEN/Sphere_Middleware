@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# Copyright 2015 INSYEN, AG
+# Copyright 2016 INSYEN, AG
 # All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the
@@ -19,42 +19,117 @@
 # SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
 # WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-__author__ = 'jeremy'
-from pymongo import MongoClient
+
+from sqlalchemy import create_engine, ForeignKey, Integer, Enum, Text, Column, DateTime, and_, or_, between, exc, \
+    distinct
+from sqlalchemy import desc
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm.session import sessionmaker
+from sqlalchemy.dialects.postgresql import JSONB, ARRAY
+from sqlalchemy.orm import relationship
+
+import sqlalchemy
+
+base = declarative_base()
 
 
-class MongoManager():
-    def __init__(self):
-        self.client = None
-        self.db = None
-        self.nodeCollection = None
-        self.contactCollection = None
+class dbBase:
+    def SanitizedDict(self):
+        retDict = self.__dict__
+        retDict.pop('_sa_instance_state', None);
+        return retDict
 
-        self.client = MongoClient()
-        self.db = self.client.dtnDB
-        self.nodeCollection = self.db.NodeCollection
-        self.contactCollection = self.db.ContactCollection
 
-    def AddNode(self, node):
-        print node
-        nodeId = self.nodeCollection.insert(node)
+class dbNode(base, dbBase):
+    __tablename__ = 'nodes'
 
-    def AddContact(self, blob):
-        if self.contactCollection.find_one(blob) is None:
-            contactId = self.contactCollection.insert(blob)
+    nodeNum = Column(Integer, primary_key=True)
+    ampEid = Column(Text)
+    hostName = Column(Text, nullable=True)
+    protocols = Column(JSONB)
+    commandGenerator = Column(Text, default="default")
+    reportsToRun = Column(ARRAY(Integer))
+    activeReports = Column(ARRAY(Integer), default=[])
 
-    def FindNode(self, node):
-        dbQuery = self.nodeCollection.find_one(node)
-        return dbQuery
+    def fromSystemCommand(self, command):
+        self.nodeNum = command.nodeNum
+        self.ampEid = command.ampEid
+        self.hostName = command.hostName
+        self.protocols = command.protocols
+        self.commandGenerator = command.commandGenerator
+        self.reportsToRun = command.reportsToRun
 
-    def FindContact(self, node):
-        dbQuery = self.contactCollection.find_one(node)
-        return dbQuery
 
-    def FindNodes(self, node=None):
-        dbQuery = self.nodeCollection.find(node)
-        return dbQuery
+class dbContact(base, dbBase):
+    __tablename__ = 'contacts'
 
-    def FindContacts(self, node=None):
-        dbQuery = self.contactCollection.find(node)
-        return dbQuery
+    id = Column(Integer, primary_key=True)
+    fromNode = Column(Integer)
+    toNode = Column(Integer)
+    startTime = Column(DateTime)
+    endTime = Column(DateTime)
+    bitRate = Column(Integer)
+    owltDelay = Column(Integer)
+    contactStatus = Column(Enum('pending', 'valid', name='contactValidityEnum'))
+    reportedTime = Column(DateTime, nullable=True, default=None)
+    protocol = Column(Text)
+    # extraData = Column(JSON)
+
+    def fromSystemCommand(self, systemCommand):
+        # We do it this way to avoid overwriting things that we care about
+        self.bitRate = systemCommand.bitRate
+        self.owltDelay = systemCommand.owltDelay
+        self.startTime = systemCommand.startTime
+        self.endTime = systemCommand.endTime
+        self.protocol = systemCommand.protocol
+        self.bitRate = systemCommand.bitRate
+        self.toNode = systemCommand.toNode
+        self.fromNode = systemCommand.fromNode
+        self.reportedTime = None
+
+
+class dbReport(base, dbBase):
+    __tablename__ = 'reports'
+    id = Column(Integer, primary_key=True)
+    ampEid = Column(Text)
+    reportMid = Column(Text, nullable=True, default=None)
+    reportType = Column(Text)
+    reportTime = Column(DateTime)
+    reportString = Column(Text)
+    value = Column(JSONB)
+
+
+class dbReportConfig(base, dbBase):
+    __tablename__ = 'reportConfig'
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    name = Column(Text)
+    type = Column(Enum('state', 'time', name='reportTypeEnum'))
+    requestedMIDs = Column(ARRAY(Text))
+    reportConfig = Column(JSONB)
+
+    def fromSystemCommand(self, systemCommand):
+        try:
+            self.id = systemCommand.id
+        except AttributeError:
+            pass
+        self.name = systemCommand.name
+        self.type = systemCommand.type
+        self.requestedMIDs = systemCommand.requestedMIDs
+        self.reportConfig = systemCommand.reportConfig
+
+
+class DBManager(object):
+    def __init__(self, config=None):
+        self.SessionFactory = None
+        self.engine = None
+
+    def connect(self, *args, **kwargs):
+        if len(args) == 1:
+            urlAsset = sqlalchemy.engine.url.make_url(args[0])
+        elif len(args) == 0 and len(kwargs) > 0:
+            urlAsset = sqlalchemy.engine.URL(**kwargs)
+        db = create_engine(urlAsset)
+        self.engine = db.connect()
+        base.metadata.create_all(self.engine)
+        self.SessionFactory = sessionmaker(self.engine)
